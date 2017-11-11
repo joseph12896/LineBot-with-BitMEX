@@ -66,7 +66,7 @@ setInterval(() => {
             // send 
             sendNotice(replyMsg);
 
-            count = (count + 1) % 2;
+            count = count + 1;
         }
 
         // 紀錄爆倉艙位，限定XBT合約
@@ -82,7 +82,8 @@ setInterval(() => {
         });
 
         // 每顯示5次爆倉資訊(依據count)，顯示過去24小時爆倉倉位
-        if (count == 0) {
+        if (count >= 2) {
+            count = 0;
 
             let replyMsg = '[ 本日爆倉 ]\n';
 
