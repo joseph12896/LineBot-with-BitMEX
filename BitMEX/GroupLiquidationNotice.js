@@ -85,12 +85,12 @@ setInterval(() => {
         if (count >= 2) {
             count = 0;
 
-            let replyMsg = '[ 本日爆倉累計 ]\n';
+            let replyMsg = '[ 過去24小時累計 ]\n';
 
             // 捨去24小時以前的資訊
             Object.keys(liquidationHistory).map((symbol, idx) => {
                 liquidationHistory[symbol] = liquidationHistory[symbol].filter((data) => {
-                    return moment().diff(data.timestamp, 'days') < 1;
+                    return moment().diff(moment(data.timestamp), 'days') < 1;
                 });
 
                 let total = liquidationHistory[symbol].reduce(function (accumulator, currentValue) {
