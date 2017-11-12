@@ -77,34 +77,53 @@ setInterval(() => {
             if (typeof liquidationHistory[data.symbol] == 'undefined') liquidationHistory[data.symbol] = [];
             liquidationHistory[data.symbol].push({
                 timestamp: moment().format('x'),
-                qty: data.leavesQty
+                qty: Number(data.leavesQty)
             });
         });
 
-        // 每顯示5次爆倉資訊(依據count)，顯示過去24小時爆倉倉位
-        if (count >= 2) {
+        // 每顯示n次爆倉資訊(依據count)，顯示過去24小時爆倉倉位
+        if (count >= 3) {
             count = 0;
 
-            let replyMsg = '[ 過去24小時累計 ]\n';
+            let replyMsg = '[ 24小時強平 ]\n';
 
             // 捨去24小時以前的資訊
             Object.keys(liquidationHistory).map((symbol, idx) => {
                 liquidationHistory[symbol] = liquidationHistory[symbol].filter((data) => {
-                    return moment().diff(moment(data.timestamp), 'days') < 1;
+                    return moment().diff(moment(data.timestamp,"x"), 'days') < 1;
                 });
+            });
 
-                let total = liquidationHistory[symbol].reduce(function (accumulator, currentValue) {
-                    return accumulator + currentValue.qty;
-                });
+            // 爆倉總量
+            Object.keys(liquidationHistory).map((symbol, idx) => {
+                let total = liquidationHistory[symbol].map(data => data.qty).reduce(function (accumulator, currentValue) {
+                    return accumulator + currentValue;
+                },0);
 
                 total = Number(total).toFixed(0).replace(/./g, function (c, i, a) {
                     return i && c !== "." && ((a.length - i) % 4 === 0) ? ',' + c : c;
                 });
 
-                replyMsg = replyMsg + `${symbol}: ${total} USD`;
+                replyMsg = replyMsg + `[ ${symbol} ] ${total} USD`;
                 if (this.length - 1 != idx) replyMsg = replyMsg + '\n';
             });
 
+            // 爆倉單筆最高
+            replyMsg = replyMsg + '\n[ Highest ]\n';
+            Object.keys(liquidationHistory).map((symbol, idx) => {
+                let higest = liquidationHistory[symbol].map(data => data.qty).reduce(function (a,b) {
+                    return Math.max(a, b);;
+                },0);
+
+                higest = Number(higest).toFixed(0).replace(/./g, function (c, i, a) {
+                    return i && c !== "." && ((a.length - i) % 4 === 0) ? ',' + c : c;
+                });
+
+                replyMsg = replyMsg + `[ ${symbol} ] ${higest} USD`;
+                if (this.length - 1 != idx) replyMsg = replyMsg + '\n';
+            });
+
+            // 發送訊息
             sendNotice(replyMsg);
         }
 
