@@ -21,12 +21,19 @@ async function updateData() {
         try {
             let symbol = symbols[i];
             let res = await fetch(`https://api.bitfinex.com/v1/pubticker/${symbol}`);
-            res = await res.json();
+            res = await res.text();
+            
+            // Maybe blocked by Cloudflare
+            // return 'Web server is returning an unknown error'...
+            let blocked = res.includes('<!DOCTYPE html>');
+            if (blocked) continue;
 
-            if (res.error) throw new Error(res.error);
-            bitfinex[symbol] = res;
+            // parse
+            let data = JSON.stringify(res);
+            if (data.error) throw new Error(data.error);
+            bitfinex[symbol] = data;
 
-            await delay(2000);
+            await delay(10000);
         } catch (e) {
             console.log(e);
         }
@@ -39,7 +46,7 @@ async function updateData() {
  */
 async function initSymbols() {
     try {
-        var res = await fetch('https://api.bitfinex.com/v1/symbols');
+        let res = await fetch('https://api.bitfinex.com/v1/symbols');
         symbols = await res.json();
     } catch (e) {
         console.log(e);
@@ -55,7 +62,7 @@ async function initSymbols() {
     await updateData();
     setInterval(async () => {
         await updateData();
-    }, 300 * 1000); // bitfinex limit: 60 request/min
+    }, 600 * 1000); // bitfinex limit: 60 request/min
 })();
 
 module.exports = () => {
