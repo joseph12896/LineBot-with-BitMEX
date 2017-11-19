@@ -48,7 +48,7 @@ async function query(event, matchedStr) {
             replyMsg = `${replyMsg}[ 資金費率 ] ${Number(100 * instrument.fundingRate).toFixed(4)} %\n`;
             replyMsg = `${replyMsg}[ 預測費率 ] ${Number(100 * instrument.indicativeFundingRate).toFixed(4)} %\n`;
         }
-        replyMsg = `${replyMsg}[ 最後更新 ] ${moment().diff(moment().parseZone(instrument.timestamp), 'seconds')} 秒前\n`;
+        replyMsg = `${replyMsg}[ 最後更新 ] ${moment().diff(moment().parseZone(instrument.timestamp), 'seconds')} 秒前`;
 
         event.reply(replyMsg);
         return;

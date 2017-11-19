@@ -123,8 +123,13 @@ class Instrument {
         // 第n>1次接收到資料
         if (raw.action == 'insert') {
             raw.data.map((ele) => {
+                this.data.push(ele);  // 複製收到的資料
+            })
+        }
+        if (raw.action == 'update') {
+            raw.data.map((ele) => {
                 let idx = this.data.findIndex((inst_ele) => { return inst_ele.symbol == ele.symbol; });
-                this.data[idx] = Object.assign({}, ele);  // 複製收到的資料
+                this.data[idx] = Object.assign(this.data[idx], ele);  // 複製收到的資料
             })
         }
     }
