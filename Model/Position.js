@@ -209,9 +209,7 @@ class Position {
         let data = this.position[symbol];
 
         // 取得BitMEX目前合約資料
-        let matched = wsc_realtime.quote.find((ele) => {
-            return ele.symbol == data.symbol;
-        });
+        let matched = wsc_realtime.quote.get(symbol);
 
         // 獲利計算
         let profit_askPrice = tool.profit(data.currentQty > 0 ? 0 : 1, data.currentQty, data.avgCostPrice, matched.askPrice, data.leverage),
