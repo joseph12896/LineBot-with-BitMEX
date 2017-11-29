@@ -31,8 +31,14 @@ async function getData() {
     try {
         let res = await fetch('https://api.coinmarketcap.com/v1/ticker/?convert=TWD');
         res = await res.json();
-
         if (res.error) throw new Error(res.error);
+
+        // for enj, cuz enj is not in ticker
+        let res_enj = await fetch('https://api.coinmarketcap.com/v1/ticker/enjin-coin/?convert=TWD');
+        res_enj = await res_enj.json();
+        if (res_enj.error) throw new Error(res_enj.error);
+
+        res.push(res_enj[0]);
         coinmarket = res;
     } catch (e) {
         console.log('[ERR] ' + e.message);
