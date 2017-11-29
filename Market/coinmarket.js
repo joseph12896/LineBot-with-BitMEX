@@ -38,6 +38,12 @@ async function getData() {
         res_enj = await res_enj.json();
         if (res_enj.error) throw new Error(res_enj.error);
 
+        // for cob
+        let res_cob = await fetch('https://api.coinmarketcap.com/v1/ticker/cobinhood/?convert=TWD');
+        res_cob = await res_cob.json();
+        if (res_cob.error) throw new Error(res_cob.error);
+
+        res.push(res_cob[0]);
         res.push(res_enj[0]);
         coinmarket = res;
     } catch (e) {
