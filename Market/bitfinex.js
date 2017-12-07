@@ -29,11 +29,11 @@ async function updateData() {
             if (blocked) continue;
 
             // parse
-            let data = JSON.stringify(res);
+            let data = JSON.parse(res);
             if (data.error) throw new Error(data.error);
             bitfinex[symbol] = data;
 
-            await delay(10000);
+            await delay(50000);
         } catch (e) {
             console.log(e);
         }
