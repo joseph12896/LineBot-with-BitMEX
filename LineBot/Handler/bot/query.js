@@ -66,7 +66,7 @@ async function query(event, matchedStr) {
     });
 
     if (typeof matched != 'undefined') {
-        // 紀錄
+        // 紀錄到資料庫
         await new Query({
             userID: event.source.userId || null,
             groupID: event.source.groupId || null,
@@ -74,24 +74,30 @@ async function query(event, matchedStr) {
             timestamp: Number(moment().valueOf()),
         }).save();
 
+        // ETH價格(USD)
+        let eth_price_usd = coinmarket().find((ele) => {
+            return ele.name == "Ethereum";
+        }).price_usd;
+
         // 產生回應訊息
-        let replyMsg = `[ ${matched.name} ]\n` +
+        let replyMsg = `[ ${matched.name} ] ${matched.percent_change_24h > 0 ? '+' : ''}${matched.percent_change_24h} %\n` +
+            `[ Total Supply ] ${formatNum(matched.total_supply)} ${matched.symbol}\n` +
+            `[ Market Cap ] ${formatNum(matched.market_cap_usd)} USD\n` +
+            `[ 24H Volume ] ${formatNum(matched["24h_volume_usd"])} USD\n` +
             `[ USD ] ${matched.price_usd}\n` +
             `[ TWD ] ${matched.price_twd}\n` +
+            `[ ETH ] ${Number(matched.price_usd / eth_price_usd).toFixed(9)}\n` +
             `[ BTC ] ${matched.price_btc}`;
-
-        // KYC多一項對ETH匯率
-        if (matched.symbol == 'KNC') {
-            try {
-                let res = await fetch('https://api.coinmarketcap.com/v1/ticker/kyber-network/?convert=ETH');
-                res = await res.json();
-                replyMsg = replyMsg + `\n[ ETH ] ${res[0].price_eth}`
-            } catch (e) {
-                console.log(e)
-            }
-        }
 
         event.reply(replyMsg);
         return;
     }
 }
+
+
+// 格式化顯示金額
+function formatNum(num) {
+    return Number(num).toFixed(0).replace(/./g, function (c, i, a) {
+        return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+    });
+};
