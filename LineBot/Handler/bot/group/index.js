@@ -7,24 +7,27 @@ const rekt = require('./rekt'); // BitMEX爆倉提醒
 
 function group(event, matchedStr) {
 
-    if (event.source.roomId || event.source.groupId) {
+    // 暫時禁用此功能
+    return event.reply('維修中:)');
 
-        let groupLineId = event.source.roomId || event.source.groupId;
+    // if (event.source.roomId || event.source.groupId) {
 
-        // 尋找Group。如果此Group不在groupPool，添加進去
-        var idx = global.groupPool.findIndex((group) => {
-            return group.groupLineId == groupLineId;
-        });
-        if (idx == -1) {
-            global.groupPool.push(new Group(groupLineId, false));
-            idx = global.groupPool.length - 1;
-        };
+    //     let groupLineId = event.source.roomId || event.source.groupId;
 
-        // 爆倉通知
-        rekt.test(event, matchedStr);
+    //     // 尋找Group。如果此Group不在groupPool，添加進去
+    //     var idx = global.groupPool.findIndex((group) => {
+    //         return group.groupLineId == groupLineId;
+    //     });
+    //     if (idx == -1) {
+    //         global.groupPool.push(new Group(groupLineId, false));
+    //         idx = global.groupPool.length - 1;
+    //     };
 
-    } else {
-        event.reply('此指令僅可在room或group中使用');
-    }
+    //     // 爆倉通知
+    //     rekt.test(event, matchedStr);
+
+    // } else {
+    //     event.reply('此指令僅可在room或group中使用');
+    // }
 
 }
