@@ -9,6 +9,9 @@ const query = require('./query.js'); // coinmarket & bitmex
 const bitt = require('./bitt/'); // bittrex
 const polo = require('./polo/'); // poloniex
 const bitf = require('./bitf/'); // bitfinex
+// 排名(指令使用次數、爆倉)
+const rank = require('./rank/');
+
 module.exports = new wrapper(/^bot\s(.+)$/ig, bot);
 
 function bot(event, matchedStr) {
@@ -19,5 +22,6 @@ function bot(event, matchedStr) {
         bitt.test(event, matchedStr) ||
         polo.test(event, matchedStr) ||
         bitf.test(event, matchedStr) ||
+        rank.test(event, matchedStr) ||
         query.test(event, matchedStr); // query接收所有字元，務必放在最尾端
 }

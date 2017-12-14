@@ -10,3 +10,4 @@
  - 開始 bot watch start {percentage}
  - 停止 bot watch stop
 [ 程式資訊 ] bot info
+[ 統計 ] bot rank
