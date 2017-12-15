@@ -27,14 +27,14 @@ async function rank(event, matchedStr) {
             };
         });
 
-        // 取出前15最常被查詢的
+        // 取出從記錄開始前15最常被查詢的
         let most = Object.keys(category).map((symbol) => {
             return ({ symbol: symbol, num: category[symbol] });
         }).sort(function (a, b) {
             return b.num - a.num;
         }).slice(0, 15);
         // 附加至回傳文字
-        replyMsg = replyMsg + '[ 最常被查詢的貨幣 ]\n'
+        replyMsg = replyMsg + '[ 查詢次數 ]\n'
         most.map((item, idx) => {
             replyMsg = replyMsg + `${(idx + 1 < 10 ? ' ' : '') + (idx + 1)}. ${item.num} 次 - ${item.symbol}\n`
         });
@@ -42,7 +42,7 @@ async function rank(event, matchedStr) {
 
     // reply
     t_end = moment();
-    replyMsg = replyMsg + `\n[ 查詢時間 ] ${t_end.diff(t_start, 's')} 秒`;
+    replyMsg = replyMsg + `\n耗時 ${t_end.diff(t_start, 's')} 秒`;
 
     event.reply(replyMsg);
     return;
