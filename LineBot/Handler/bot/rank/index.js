@@ -24,7 +24,7 @@ async function rank(event, matchedStr) {
             let msg = record.message.toUpperCase();
             msg = msg.substr(4); // remove 'bot\s'
             if (typeof category[msg] == 'undefined') {
-                category[msg] = 0;
+                category[msg] = 1;
             } else {
                 category[msg] = category[msg] + 1;;
             };
@@ -57,7 +57,7 @@ async function rank(event, matchedStr) {
             let msg = record.message.toUpperCase();
             msg = msg.substr(4); // remove 'bot\s'
             if (typeof category_24h[msg] == 'undefined') {
-                category_24h[msg] = 0;
+                category_24h[msg] = 1;
             } else {
                 category_24h[msg] = category_24h[msg] + 1;;
             };
