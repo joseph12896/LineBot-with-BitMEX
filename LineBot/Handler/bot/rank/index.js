@@ -45,7 +45,7 @@ async function rank(event, matchedStr) {
          * 取出24h前6最常被查詢的，方便做快捷鍵
          */
         let category_24h = {},
-            begin = moment().subtract(1, 'days').valueOf();
+            begin = moment().startOf('day').valueOf();
         records.map((record) => {
             // 去除作者自己查詢的次數
             if (record.userID == 'Ud14d4a2d758acb05cc86df1a4f1279c7') return;
@@ -68,7 +68,7 @@ async function rank(event, matchedStr) {
         }).sort(function (a, b) {
             return b.num - a.num;
         }).slice(0, 6);
-        replyMsg = replyMsg + '\n[ 24H查詢次數 ]\n'
+        replyMsg = replyMsg + '\n[ 本日查詢次數 ]\n'
         most_24h.map((item, idx) => {
             replyMsg = replyMsg + `${(idx + 1 < 10 ? ' ' : '') + (idx + 1)}. ${item.num} 次 - ${item.symbol}\n`
         });
