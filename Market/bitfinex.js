@@ -3,6 +3,22 @@ var bitfinex = {};
 var symbols;
 
 /**
+ * bitfinex 資料格式
+ * Data type: {"mid":"0.01009","bid":"0.010088","ask":"0.010092","last_price":"0.010089","low":"0.00875","high":"0.010456","volume":"288148.94872306","timestamp":"1508870721.1461127"}
+ */
+(async function () {
+    await initSymbols();
+    await updateData();
+    setInterval(async () => {
+        await updateData();
+    }, 600 * 1000); // bitfinex limit: 60 request/min
+})();
+
+module.exports = () => {
+    return bitfinex;
+};
+
+/**
  * delay
  */
 function delay(ms) {
@@ -22,7 +38,7 @@ async function updateData() {
             let symbol = symbols[i];
             let res = await fetch(`https://api.bitfinex.com/v1/pubticker/${symbol}`);
             res = await res.text();
-            
+
             // Maybe blocked by Cloudflare
             // return 'Web server is returning an unknown error'...
             let blocked = res.includes('<!DOCTYPE html>');
@@ -33,7 +49,7 @@ async function updateData() {
             if (data.error) throw new Error(data.error);
             bitfinex[symbol] = data;
 
-            await delay(50000);
+            await delay(2 * 1000);
         } catch (e) {
             console.log(e);
         }
@@ -51,20 +67,4 @@ async function initSymbols() {
     } catch (e) {
         console.log(e);
     }
-};
-
-/**
- * bitfinex 資料格式
- * Data type: {"mid":"0.01009","bid":"0.010088","ask":"0.010092","last_price":"0.010089","low":"0.00875","high":"0.010456","volume":"288148.94872306","timestamp":"1508870721.1461127"}
- */
-(async function () {
-    await initSymbols();
-    await updateData();
-    setInterval(async () => {
-        await updateData();
-    }, 600 * 1000); // bitfinex limit: 60 request/min
-})();
-
-module.exports = () => {
-    return bitfinex;
 };

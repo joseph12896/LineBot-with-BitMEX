@@ -1,6 +1,7 @@
 // bitfinex查價功能
 const wrapper = require('../../wrapper.js');
 const getBitfinexData = require('../../../../Market/bitfinex'); // 提供bittrex查價
+const moment = require('moment');
 
 module.exports = new wrapper(/^bitf\s(.+)$/ig, bitf);
 
@@ -21,10 +22,15 @@ function bitf(event, matchedStr) {
 
     if (matchedArr.length > 0) {
         let replyMsg = `[ ${matchedStr} ]\n`;
+        let updatedTime = [];
+        // XX to USD/ETH/BTC...
         matchedArr.map((symbol) => {
-            replyMsg = replyMsg + `[ ${symbol.slice(3, 6).toUpperCase()} ] ${bitfinex[symbol].mid}\n`
+            replyMsg = replyMsg +
+                `[ ${symbol.slice(3, 6).toUpperCase()} ] ${bitfinex[symbol].mid}\n`;
+            updatedTime.push(moment().diff(moment.unix(bitfinex[symbol].timestamp), 'minutes'));
         });
-        replyMsg = replyMsg.slice(0, replyMsg.length - 1);
+        replyMsg = replyMsg + `[ Updated ] ${updatedTime.join('/')} mins ago\n`;
+        // replyMsg = replyMsg.slice(0, replyMsg.length - 1);
 
         event.reply(replyMsg);
     }
