@@ -45,7 +45,7 @@ async function rank(event, matchedStr) {
          * 取出24h(+8時區)前6最常被查詢的，方便做快捷鍵
          */
         let category_24h = {},
-            begin = moment().zone('+0800').startOf('day').valueOf();
+            begin = moment().utcOffset("+08:00").startOf('day').valueOf();
         records.map((record) => {
             // 去除作者自己查詢的次數
             if (record.userID == 'Ud14d4a2d758acb05cc86df1a4f1279c7') return;
