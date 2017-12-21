@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const cloudscraper = require('cloudscraper');
 
 /**
  * Bitoex Object
@@ -21,17 +22,19 @@ setInterval(getData, 20 * 1000);
 async function getData() {
     {
         try {
-            let res = await fetch('https://www.bitoex.com/api/v1/get_rate')
-            // res = await res.json();
-            res = await res.text();
-            console.log(res);
-            res = JSON.parse(res);
-            bitoex.btc = {
-                buy_price_twd: res.buy,
-                sell_price_twd: res.sell,
-                timestamp: res.timestamp,
-            }
-            // console.log(bitoex)
+            // 繞過cloudflare
+            cloudscraper.get('https://www.bitoex.com/api/v1/get_rate', function (error, response, body) {
+                if (error) {
+                    console.log('Error occurred');
+                } else {
+                    let res = JSON.parse(body);
+                    bitoex.btc = {
+                        buy_price_twd: res.buy,
+                        sell_price_twd: res.sell,
+                        timestamp: res.timestamp,
+                    }
+                }
+            });
         } catch (e) {
             console.log(e);
         }
