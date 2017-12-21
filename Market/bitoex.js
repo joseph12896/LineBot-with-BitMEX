@@ -22,7 +22,10 @@ async function getData() {
     {
         try {
             let res = await fetch('https://www.bitoex.com/api/v1/get_rate')
-            res = await res.json();
+            // res = await res.json();
+            res = await res.text();
+            console.log(res);
+            res = JSON.parse(res);
             bitoex.btc = {
                 buy_price_twd: res.buy,
                 sell_price_twd: res.sell,
