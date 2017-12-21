@@ -15,7 +15,7 @@ module.exports = () => bitoex;
 
 // Init
 getData();
-setInterval(getData, 10 * 1000);
+setInterval(getData, 20 * 1000);
 
 // Get data from bitoex
 async function getData() {
