@@ -10,6 +10,7 @@ const etherscan = require('../../../Market/etherscan'); // SoChain查價
 const moment = require('moment');
 const Query = require('./Schema').Query; // 紀錄使用查詢指令的人數
 
+const emoji = require('node-emoji')
 const fetch = require('node-fetch');
 
 const wrapper = require('../wrapper.js');
@@ -70,6 +71,18 @@ async function query(event, matchedStr) {
     * 非BitMEX合約之一，查詢CoinMarket (x-usd/twd/btc)
     */
 
+    // genLight - 依據timestamp產生對應燈號，讓使用者知道所查詢的資料多舊
+    function genLight(timestamp) {
+        let diff = moment().diff(moment.unix(timestamp), 'minutes');
+        if (diff < 5) { // <= 5minutes
+            return emoji.emojify(':small_blue_diamond:');
+        } else if (diff < 15) {
+            return emoji.emojify(':small_orange_diamond:');
+        } else {
+            return emoji.emojify(':exclamation:');
+        }
+    }
+
     // 查詢coinmarket
     let matched = coinmarket().find((ele) => {
         let name = (ele.name).toUpperCase(),
@@ -92,15 +105,16 @@ async function query(event, matchedStr) {
         }).price_usd;
 
         // 產生回應訊息
-        let replyMsg = `[ ${matched.name} ] ${matched.percent_change_24h > 0 ? '+' : ''}${matched.percent_change_24h} %\n` +
+        let replyMsg =
+            `- CoinMarket - ${genLight(matched.last_updated)}\n` +
+            `[ ${matched.name} ] ${matched.percent_change_24h > 0 ? '+' : ''}${matched.percent_change_24h} %\n` +
             `[ Supply ] ${formatNum(matched.total_supply)} ${matched.symbol}\n` +
             `[ Mkt Cap ] ${formatNum(matched.market_cap_usd)} USD\n` +
             `[ 24H Vol ] ${formatNum(matched["24h_volume_usd"])} USD\n` +
             `[ USD ] ${matched.price_usd}\n` +
             `[ TWD ] ${matched.price_twd}\n` +
             `[ ETH ] ${Number(matched.price_usd / eth_price_usd).toFixed(9)}\n` + // 兌換成ETH
-            `[ BTC ] ${matched.price_btc}\n` +
-            `[ Updated ] ${moment().diff(moment.unix(matched.last_updated), 'minutes')} mins ago`;
+            `[ BTC ] ${matched.price_btc}`;
 
         /**
         * p_diff - 和coinmarket價格比較，回傳差異百分比字串
@@ -115,29 +129,25 @@ async function query(event, matchedStr) {
         if (userinput == 'BTC' || userinput == 'BITCOIN') {
             replyMsg = replyMsg +
                 `\n\n` +
-                `< BitoEX >\n` +
+                `- BitoEX - ${genLight(bitoex().btc.timestamp)}\n` +
                 `[ Buy ] ${formatNum(bitoex().btc.buy_price_twd)} TWD  ${p_diff(bitoex().btc.buy_price_twd, matched.price_twd)}\n` +
                 `[ Sell ] ${formatNum(bitoex().btc.sell_price_twd)} TWD  ${p_diff(bitoex().btc.sell_price_twd, matched.price_twd)}\n` +
-                `[ Updated ] ${moment().diff(moment.unix(bitoex().btc.timestamp), 'minutes')} mins ago\n` +
                 `\n` +
-                `< MaiCoin >\n` +
+                `- MaiCoin - ${genLight(maicoin().btc.timestamp)}\n` +
                 `[ Buy ] ${formatNum(maicoin().btc.buy_price_twd)} TWD  ${p_diff(maicoin().btc.buy_price_twd, matched.price_twd)}\n` +
-                `[ Sell ] ${formatNum(maicoin().btc.sell_price_twd)} TWD  ${p_diff(maicoin().btc.sell_price_twd, matched.price_twd)}\n` +
-                `[ Updated ] ${moment().diff(moment.unix(maicoin().btc.timestamp), 'minutes')} mins ago`;
+                `[ Sell ] ${formatNum(maicoin().btc.sell_price_twd)} TWD  ${p_diff(maicoin().btc.sell_price_twd, matched.price_twd)}`;
         } else if (userinput == 'ETH' || userinput == 'ETHEREUM') {
             replyMsg = replyMsg +
                 `\n\n` +
-                `< MaiCoin >\n` +
+                `- MaiCoin - ${genLight(maicoin().eth.timestamp)}\n` +
                 `[ Buy ] ${formatNum(maicoin().eth.buy_price_twd)} TWD  ${p_diff(maicoin().eth.buy_price_twd, matched.price_twd)}\n` +
-                `[ Sell ] ${formatNum(maicoin().eth.sell_price_twd)} TWD  ${p_diff(maicoin().eth.sell_price_twd, matched.price_twd)}\n` +
-                `[ Updated ] ${moment().diff(moment.unix(maicoin().eth.timestamp), 'minutes')} mins ago`;
+                `[ Sell ] ${formatNum(maicoin().eth.sell_price_twd)} TWD  ${p_diff(maicoin().eth.sell_price_twd, matched.price_twd)}`;
         } else if (userinput == 'LTC' || userinput == 'LITECOIN') {
             replyMsg = replyMsg +
                 `\n\n` +
-                `< MaiCoin >\n` +
+                `- MaiCoin - ${genLight(maicoin().ltc.timestamp)}\n` +
                 `[ Buy ] ${formatNum(maicoin().ltc.buy_price_twd)} TWD  ${p_diff(maicoin().ltc.buy_price_twd, matched.price_twd)}\n` +
-                `[ Sell ] ${formatNum(maicoin().ltc.sell_price_twd)} TWD  ${p_diff(maicoin().ltc.sell_price_twd, matched.price_twd)}\n` +
-                `[ Updated ] ${moment().diff(moment.unix(maicoin().ltc.timestamp), 'minutes')} mins ago`;
+                `[ Sell ] ${formatNum(maicoin().ltc.sell_price_twd)} TWD  ${p_diff(maicoin().ltc.sell_price_twd, matched.price_twd)}`;
         }
 
         // 回傳結果    

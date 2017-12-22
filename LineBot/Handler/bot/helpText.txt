@@ -1,6 +1,6 @@
 [ ⚡️指令⚡️ ]
 [ BitMEX合約 ] bot {contract}
-[ Coinmarket查詢 ] bot {coin}
+[ 一般查詢 ] bot {coin}
 [ Poloniex查詢 ] bot polo {coin}
 [ Bittrex查詢 ] bot bitt {coin}
 [ Bitfinex查詢 ] bot bitf {coin}
@@ -10,4 +10,8 @@
  - 開始 bot watch start {percentage}
  - 停止 bot watch stop
 [ 程式資訊 ] bot info
-[ 統計 ] bot rank
+[ 查詢統計 ] bot rank
+[ 燈號示意 ] 資料更新時間
+- 藍燈🔹: <5 min
+- 橘燈🔸: <15 min
+- 驚嘆號❗️: >15 min
