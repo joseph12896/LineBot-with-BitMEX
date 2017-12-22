@@ -49,7 +49,7 @@ async function updateData() {
             if (data.error) throw new Error(data.error);
             bitfinex[symbol] = data;
 
-            await delay(2 * 1000);
+            await delay(10 * 1000);
         } catch (e) {
             console.log(e);
         }
