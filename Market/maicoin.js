@@ -22,13 +22,13 @@ const maicoin = {
         timestamp: null,
     },
 };
-module.exports = () => maicoin;
+module.exports = maicoin;
 
 /**
  * Initialize
  */
 getData();
-setInterval(getData, 20 * 1000);
+setInterval(getData, 20 * 100);
 
 /**
  * getPrices

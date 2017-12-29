@@ -12,7 +12,7 @@ const bitoex = {
         timestamp: null,
     }
 };
-module.exports = () => bitoex;
+module.exports = bitoex;
 
 // Init
 getData();
