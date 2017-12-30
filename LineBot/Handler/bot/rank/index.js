@@ -1,13 +1,11 @@
-// 查詢價格數統計
-const wrapper = require('../../wrapper.js');
-const Query = require('../Schema').Query;
+const Query = require(SCHEMA_PATH).Query; // 紀錄使用查詢指令的人數
 const moment = require('moment');
-const mongoose = require('mongoose');
+
+const wrapper = require('../../wrapper.js');
 module.exports = new wrapper(/^rank$/ig, rank);
 
 async function rank(event, matchedStr) {
     let t_start = moment(), t_end, replyMsg = '';
-    //event.reply('查詢中...');
 
     // 尋找紀錄
     let records = await Query.find().exec(); // large data

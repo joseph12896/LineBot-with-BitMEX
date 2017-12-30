@@ -1,7 +1,11 @@
 var mongoose = require('mongoose');
-mongoose.Promise = Promise;  
+mongoose.Promise = Promise;
 
 var MONGO_URI = process.env.MONGODB_URI;
+
+// Schema path
+const path = require('path');
+global.SCHEMA_PATH = path.resolve(__dirname, './Schema');
 
 module.exports = async function init(cb) {
     try {

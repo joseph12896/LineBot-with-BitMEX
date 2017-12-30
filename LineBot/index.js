@@ -1,7 +1,6 @@
 const linebot = require('linebot');
 const fs = require('fs');
 const path = require('path');
-const emoji = require('node-emoji')
 
 /**
  * Initialize LineBot
@@ -17,19 +16,18 @@ global.bot = bot;
 module.exports = bot;
 
 // 執行BitMEX相關程式
-require('../BitMEX/BitMEX_realtime.js').open('wss://www.bitmex.com/realtime'); // 查價功能
-require('../BitMEX/BitMEX_realtimemd.js').open('wss://www.bitmex.com/realtimemd'); // 成交提醒
-require('../BitMEX/GroupLiquidationNotice.js'); // 爆倉提醒
+require('../Websocket/BitMEX_Realtime').open('wss://www.bitmex.com/realtime');
+require('../Websocket/BitMEX_Realtime_md').open('wss://www.bitmex.com/realtimemd');
 
 /**
  * Event
  */
 const handler_bot = require('./Handler/bot/');
-const handler_funny = require('./Handler/funny/');
+const handler_bug = require('./Handler/bug/');
 bot.on('message', function (event) {
     if (event.message.type == 'text') {
         handler_bot.test(event, event.message.text);
-        // handler_funny.test(event, event.message.text);
+        handler_bug.test(event, event.message.text);
     }
 });
 

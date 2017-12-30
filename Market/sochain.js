@@ -1,58 +1,97 @@
 const fetch = require('node-fetch');
-const moment = require('moment');
+var trading_pair = [],
+    currencies = {};
 
-/**
- * SoChain Object
- * 買賣價(TWD),更新時間(unix timestamp)
- */
-const sochain = {
-    ltc: {
-        price_usd: null,
-        timestamp: null,
-    },
-};
-module.exports = () => sochain;
-
-/**
- * Initialize
- */
-getData();
-setInterval(getData, 20 * 1000);
-
-/**
- * getData
- */
-async function getData() {
-    try {
+module.exports = {
+    "find": function (currency) {
+        // output:
+        //  [
         // {
-        //     "status" : "success",
-        //     "data" : {
-        //       "network" : "LTC",
-        //       "prices" : [
-        //         {
-        //           "price" : "303.28",
-        //           "price_base" : "USD",
-        //           "exchange" : "bitstamp",
-        //           "time" : 1513869566
-        //         },...
-        //       ]
-        //     }
-        //   }
-        let res = await fetch(`https://chain.so/api/v2/get_price/LTC/USD`);
-        res = await res.json();
-        if (res["status"] == "success") {
-            let sum = 0, timestamp = Number.MAX_SAFE_INTEGER;
-            res["data"]["prices"].map((item, idx) => {
-                sum = sum + Number(item["price"]); // 取bitfinex/bitstamp/coinbase的平均
-                timestamp = Math.min(timestamp, Number(item["time"])); // 取最小的時間
-            });
-            sochain.ltc = {
-                price_usd: parseInt(sum / res["data"]["prices"].length),
-                timestamp: timestamp,
+        //     "price" : "303.28",
+        //     "price_base" : "USD",
+        //     "exchange" : "bitstamp",
+        //     "time" : 1513869566
+        // },...]
+        return currencies[currency] || [];
+    }
+};
+
+
+
+/**
+ * Init
+ */
+(async () => {
+    await getTradingPair();
+    routine();
+})();
+
+/**
+ * routine - 從sochain依據trading pair抓資料
+ */
+async function routine() {
+    for (let i = 0; i < trading_pair.length; i = i + 1) {
+        try {
+            let res = await fetch(`https://chain.so/api/v2/get_price/${trading_pair[i]}`);
+            res = await res.json();
+            if (res["status"] == "success" && res.data.prices.length > 0) {
+                currencies[res.data.network] = res.data.prices;
+                // console.log('Got data from sochain:', res.data.network, ',', res.data.prices.length);
             }
+        } catch (e) {
+            console.log(e);
         }
-        // console.log(sochain);
+        await delay(10 * 1000);
+    }
+    // Repeatedly run
+    setTimeout(routine, 60 * 1000);
+}
+
+/**
+ * init - 取得trading pair
+ */
+async function getTradingPair() {
+    try {
+        let res,
+            list = [];
+
+        // Bitfinex
+        // ["btcusd","ltcusd","ltcbtc","ethusd"...]
+        res = await fetch('https://api.bitfinex.com/v1/symbols');
+        let bitf = await res.json();
+        bitf = bitf.map(item => item.slice(0, 3).toUpperCase());
+        list = list.concat(bitf);
+
+        // Bitstamp
+        res = await fetch('https://www.bitstamp.net/api/v2/trading-pairs-info/');
+        let bitstamp = await res.json();
+        bitstamp = bitstamp.map(item => item.name.slice(0, 3).toUpperCase());
+        list = list.concat(bitstamp);
+
+        // Coinbase,bitpay,bittrex略過
+        trading_pair = uniq(list);
+        console.log('Got trading pair. Length:', trading_pair.length)
     } catch (e) {
         console.log(e);
     }
+};
+
+/**
+ * uniq - Remove duplicate element from array
+ */
+function uniq(a) {
+    return a.sort().filter(function (item, pos, ary) {
+        return !pos || item != ary[pos - 1];
+    })
+}
+
+/**
+ * delay
+ */
+function delay(ms) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve();
+        }, ms)
+    })
 }
