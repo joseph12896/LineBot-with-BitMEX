@@ -7,6 +7,7 @@ const coinmarket = require('../../../Market/coinmarket'); // 提供CoinMarket查
 const bitoex = require('../../../Market/bitoex'); // bitoex查價
 const maicoin = require('../../../Market/maicoin'); // maicoin查價
 const sochain = require('../../../Market/sochain'); // SoChain查價
+const binance = require('../../../Market/binance'); // binance查價
 
 const Query = require(SCHEMA_PATH).Query; // 紀錄使用查詢指令的人數
 const moment = require('moment');
@@ -112,17 +113,18 @@ async function query(event, matchedStr) {
     }
 
     /**
-     * sochain_search - 尋找sochain內相對應的coin和exchange資料，回傳字串
+     * search - 尋找source內相對應的coin和exchange資料，回傳字串
      * @param {String} header - 回應訊息要顯示的
      * @param {String} exchange - 指定交易所
      */
-    function sochain_search(header, exchange) {
-        let data = sochain
-            .find(coinmkt_item ? coinmkt_item.symbol : userinput) // 有些coinmarket會找不到
-            .filter(item => (item.exchange == exchange));
+    function search(source, header, exchange) {
+        // 以userinput或是coinmkt_item.symbol找source內符合的幣種
+        let data = source.find(userinput) || source.find(coinmkt_item.symbol);
+        data = data.filter(item => (exchange ? (item.exchange == exchange) : true));
+
         if (data.length > 0) {
-            // 隨便一筆資料的timestamp都可，因為皆一起取得
-            return `\n- ${header} - ${genLight(data[0].time)}\n` +
+            // 隨便一筆資料的timestamp都可，因為資料皆一起取得
+            return `\n- ${header} - ${genLight(data[0].time || data[0].timestamp)}\n` +
                 data.map(item => `[ ${item.price_base} ] ${item.price}`).join('\n') +
                 `\n`;
         }
@@ -130,13 +132,19 @@ async function query(event, matchedStr) {
     }
 
     /**
+     * binance
+     */
+    replyMsg = replyMsg +
+        search(binance, 'Binance');
+
+    /**
      * Sochain(bitstamp/bitifinex/coinbase/bittrex)
      */
     replyMsg = replyMsg +
-        sochain_search('Bitstamp', 'bitstamp') +
-        sochain_search('Bitfinex', 'bitfinex') +
-        sochain_search('Coinbase', 'coinbase') +
-        sochain_search('Bittrex', 'bittrex');
+        search(sochain, 'Bitfinex', 'bitfinex') +
+        search(sochain, 'Bitstamp', 'bitstamp') +
+        search(sochain, 'Bittrex', 'bittrex') +
+        search(sochain, 'Coinbase', 'coinbase');
 
     /**
      * reply
