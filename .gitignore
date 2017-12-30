@@ -36,6 +36,7 @@ lib-cov
 npm-debug.log
 settings.js
 nextCommit.txt
+_*
 
 ################################################
 # Miscellaneous
