@@ -1,5 +1,6 @@
 const Query = require(SCHEMA_PATH).Query; // 紀錄使用查詢指令的人數
 const moment = require('moment');
+const mongoose = require('mongoose');
 
 const wrapper = require('../../wrapper.js');
 module.exports = new wrapper(/^rank$/ig, rank);
