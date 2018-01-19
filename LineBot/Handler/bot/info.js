@@ -29,7 +29,7 @@ async function info(event) {
         `[ Node.js Version ] ${process.version}\n` +
         `[ Platform ] ${process.platform}\n` +
         `[ Source Code ] tinyurl.com/ycobwnoh \n` +
-        `[ Others ] 使用Heroku Free Plan ，每月運行550小時`;
+        `[ Others ] 使用Heroku Hobby Plan，$燒完就放生嘿`;
         // `[ Donate(ETH) ]\n` +
         // `- 0xa087C9E3eAE348D16B95ea19719c67f77EDa7080\n` +
         // `- ETH Balance: ${walletBalance} ETH`;

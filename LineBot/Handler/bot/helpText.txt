@@ -2,6 +2,8 @@
 [ 查詢 ] bot {coin}
 # 支援
 - BitMEX Contract
+- BitoEX
+- Maicoin
 - Bitfinex
 - Bittrex
 - Binance
@@ -15,3 +17,7 @@
 - 藍燈🔹: <5 min
 - 橘燈🔸: <30 min
 - 驚嘆號❗️: >30 min
+[ 神奇小指令 ]
+- bot 志
+- bot 志 ord
+- bot 志 exec
