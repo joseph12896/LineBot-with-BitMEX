@@ -15,7 +15,6 @@ const apiKey = process.env.apiKey,
 const template_path = path.resolve(__dirname);
 
 async function EventMsgToImgLink(event, matchedStr = ' ') {
-    console.log(matchedStr);
     matchedStr = matchedStr.substr(1); // 消去跟在後面的空格
     try {
         // 取得對應資料，產生html
