@@ -27,8 +27,9 @@ module.exports = maicoin;
 /**
  * Initialize
  */
+return; // disabled
 getData();
-setInterval(getData, 60 * 1000);
+setInterval(getData, 5 * 60 * 1000);
 
 /**
  * getPrices

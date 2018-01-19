@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- font-awesome -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        crossorigin="anonymous">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+
+    <style>
+        /* font weight & align */
+
+        .pos>td,
+        .pos>th {
+            text-align: right;
+        }
+
+        .pos>td:nth-child(6) {
+            color: #ae543b;
+        }
+
+        .pos>td:nth-child(1),
+        .pos>th:nth-child(1) {
+            text-align: left;
+        }
+
+        .pos>td:nth-child(4) {
+            font-weight: bold;
+        }
+
+        .pos>td:nth-child(6) {
+            font-weight: bold;
+        }
+
+        /* font color */
+
+        .buy>td:nth-child(1) {
+            color: #52b370;
+        }
+
+        .sell>td:nth-child(1) {
+            color: #e8704f;
+        }
+
+        /* border */
+
+        .buy>td:first-child {
+            border-left: 12px solid #52b370;
+        }
+
+        .buy>td:last-child {
+            border-right: 12px solid #52b370;
+        }
+
+        .sell>td:first-child {
+            border-left: 12px solid #e8704f;
+        }
+
+        .sell>td:last-child {
+            border-right: 12px solid #e8704f;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="table table-sm" style="">
+        <thead>
+            <tr class="pos">
+                <th>合約</th>
+                <th>目前倉位數量</th>
+                <th>價值</th>
+                <th>開倉價格</th>
+                <th>標記價格</th>
+                <th>強平價格</th>
+                <th>保證金</th>
+                <th>未實現盈虧(回報率%)</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</body>
+
+</html>
