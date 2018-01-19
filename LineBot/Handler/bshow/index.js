@@ -1,5 +1,5 @@
 const wrapper = require('../wrapper.js');
-module.exports = new wrapper(/^bot 志(\s.+)?$/iug, EventMsgToImgLink);
+module.exports = new wrapper(/^bot 韭菜(\s.+)?$/iug, EventMsgToImgLink);
 
 const webshot = require('./webshot'),
     uploadToImgur = require('./uploadToImgur'),

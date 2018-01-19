@@ -17,7 +17,7 @@
 - 藍燈🔹: <5 min
 - 橘燈🔸: <30 min
 - 驚嘆號❗️: >30 min
-[ 神奇小指令 ]
-- bot 志
-- bot 志 ord
-- bot 志 exec
+[ 其它 ] 
+- bot 韭菜
+- bot 韭菜 ord
+- bot 韭菜 exec
