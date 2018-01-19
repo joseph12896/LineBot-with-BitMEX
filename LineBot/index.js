@@ -26,8 +26,8 @@ const handler_bot = require('./Handler/bot/');
 const handler_bug = require('./Handler/bug/');
 const handler_bshow = require('./Handler/bshow/');
 bot.on('message', function (event) {
+    console.log(event)
     if (event.message.type == 'text') {
-        console.log(event.message.text)
         handler_bot.test(event, event.message.text);
         handler_bug.test(event, event.message.text);
         // 報倉位的
