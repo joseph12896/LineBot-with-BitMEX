@@ -16,7 +16,7 @@ module.exports = async function (htmlText = '<body></body>', windowSize = {
         defaultWhiteBackground: true,
         windowSize: windowSize,
         timeout: 10 * 1000,
-        phantomPath: path.join(__dirname, 'vendor/phantomjs/bin/phantomjs') // for heroku
+        phantomPath: path.join('./vendor/phantomjs/bin/phantomjs') // for heroku
     };
     let renderStream = webshot(htmlText, options);
 
