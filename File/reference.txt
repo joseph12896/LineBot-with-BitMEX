@@ -1,0 +1,21 @@
+# i/o img with mongoose
+https://gist.github.com/aheckmann/2408370
+
+# simple express memory-cache
+https://medium.com/the-node-js-collection/simple-server-side-cache-for-express-js-with-node-js-45ff296ca0f0
+
+# mongoose model member function 方法
+https://medium.com/@scalegridio/getting-started-with-mongodb-and-mongoose-c406541d325a
+
+--------------------------------------
+# member system
+https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
+
+# 圖片上傳
+http://blog.nbostech.com/2016/10/store-and-read-image-file-in-mongodb-using-nodejsexpressmongoose/
+https://github.com/expressjs/multer
+- 專案
+https://ithelp.ithome.com.tw/articles/10189263
+
+# [譯]您閲讀的 Nodejs/Express.js 驗證機制教學（很可能)錯了
+- https://hk.saowen.com/a/f7498c034f13495997211070a0c17722fe69e58f4f935fad6a3f9bb31b656d3c

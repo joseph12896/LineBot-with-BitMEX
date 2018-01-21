@@ -9,7 +9,7 @@ const rank = require('./rank/');
 module.exports = new wrapper(/^bot\s(.+)$/ig, bot);
 
 function bot(event, matchedStr) {
-    group.test(event, matchedStr) ||
+    // group.test(event, matchedStr) ||
         help.test(event, matchedStr) ||
         info.test(event, matchedStr) ||
         rank.test(event, matchedStr) ||

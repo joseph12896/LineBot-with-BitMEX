@@ -49,14 +49,17 @@ const bugSchema = new Schema({
 });
 const Bug = mongoose.model('Bug', bugSchema);
 
-// Setting
-// const settingSchema = new Schema({
-
-// });
-// const Setting = mongoose.model('Setting', settingSchema);
+// File
+const FileSchema = new Schema({
+    hash: { type: String, required: true, unique: true },
+    filename: { type: String, default: '' },
+    data: { type: Buffer }
+});
+const File = mongoose.model('File', FileSchema);
 
 module.exports = {
     Group,
     Query,
-    Bug
+    Bug,
+    File
 }

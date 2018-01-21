@@ -18,11 +18,21 @@ async function beforeExit() {
  * InitializeDatabase
  */
 InitializeDatabase(async function (dbs) {
-  // 啟動服務
+  /**
+   * 處理line message
+   */
   const linebotParser = require('./LineBot/').parser();
-  app.post('/', linebotParser);
+  app.post('/linebot', linebotParser);
 
-  // 因為 express 預設走 port 3000，而 heroku 上預設卻不是，要透過下列程式轉換
+  /**
+   * 處理檔案要求
+   */
+  const fileRouter = require('./File/');
+  app.use('/file', fileRouter);
+
+  /**
+   * 啟動express server
+   */
   var server = app.listen(process.env.PORT || 3000, function () {
     var port = server.address().port;
     console.log("App now running on port", port);

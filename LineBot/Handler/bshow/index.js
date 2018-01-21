@@ -7,7 +7,10 @@ const webshot = require('./webshot'),
     moment = require('moment'),
     ccxt = require('ccxt'),
     cheerio = require('cheerio'),
-    path = require('path');
+    path = require('path'),
+    File = require(SCHEMA_PATH).File,
+    url = require('url'),
+    crypto = require('crypto');
 
 const apiKey = process.env.apiKey,
     secret = process.env.secret;
@@ -48,16 +51,29 @@ async function EventMsgToImgLink(event, matchedStr = ' ') {
         // 產生截圖
         let ImgBuffer = await webshot(html, windowSize);
         console.log(`已產生截圖 ${ImgBuffer.length} bytes`);
+
         // 上傳至imgur取得link
-        let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-        let ImgObject = await Promise.race([
-            uploadToImgur(ImgBuffer),
-            wait(20 * 1000),// 處理過久則捨棄
-        ]);
+        // let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+        // let ImgObject = await Promise.race([
+        //     uploadToImgur(ImgBuffer),
+        //     wait(20 * 1000),// 處理過久則捨棄
+        // ]);
+
+        // 儲存至mongodb並回傳link
+        let hash = crypto.createHash('sha1').update(ImgBuffer).digest('hex'),
+            ImgObject = {};
+        if (await File.count({ hash: hash }) > 0) {
+            console.log(`圖片已存在`);
+        } else {
+            console.log(`儲存截圖中`);
+            await new File({ filename: `${moment().unix()}.jpg`, data: ImgBuffer, hash: hash }).save();
+        }
+        ImgObject.link = url.resolve(process.env.APP_DOMAIN, `/file/${hash}`);
+        console.log(`已產生image link - ${ImgObject.link}`);
+
         // Reply       
         if (ImgObject) {
             let ImgLink = ImgObject.link;
-            console.log(`已產生Imgur link - ${ImgLink}`);
             event.reply({
                 type: 'image',
                 originalContentUrl: ImgLink,

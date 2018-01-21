@@ -9,14 +9,19 @@ const webshot = require('webshot'),
 module.exports = async function (htmlText = '<body></body>', windowSize = {
     width: 1024, height: 768
 }) {
-
+    // The location of phantomjs
+    let phantomPath = require('phantomjs').path;
+    if (process.env.NODE && ~process.env.NODE.indexOf("heroku")) {
+        phantomPath = path.join('./vendor/phantomjs/bin/phantomjs');
+    }
+    
     // 設定要截圖的網頁&截圖大小
     let options = {
         siteType: 'html',
         defaultWhiteBackground: true,
         windowSize: windowSize,
         timeout: 10 * 1000,
-        phantomPath: path.join('./vendor/phantomjs/bin/phantomjs') // for heroku
+        phantomPath: phantomPath
     };
     let renderStream = webshot(htmlText, options);
 
