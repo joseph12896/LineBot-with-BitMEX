@@ -3,7 +3,7 @@
  */
 var LRU = require("lru-cache")
     , options = {
-        max: 1024 * 1024 * 10 // 50MB
+        max: 1024 * 1024 * 50 // 50MB
         , length: function (n, key) {
             return n.data.length; // buffer size
         }
