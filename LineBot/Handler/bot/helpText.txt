@@ -18,6 +18,6 @@
 - 橘燈🔸: <30 min
 - 驚嘆號❗️: >30 min
 [ 其它 ] 
-- bot 韭菜
-- bot 韭菜 ord
-- bot 韭菜 exec
+- bot {人}
+- bot {人} ord
+- bot {人} exec
