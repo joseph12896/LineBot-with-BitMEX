@@ -57,9 +57,35 @@ const FileSchema = new Schema({
 });
 const File = mongoose.model('File', FileSchema);
 
+// Person 
+const PersonSchema = new Schema({
+    line: {
+        userId: { type: String, required: true, unique: true },
+        displayName: { type: String },
+        pictureUrl: { type: String },
+    },
+    bitmexQuerySetting: {
+        // 相關參數
+        apikey: { type: String, default: '' },
+        secret: { type: String, default: '' },
+        displayName: { type: String, default: '' },
+        execution: { type: Boolean, default: true },
+        order: { type: Boolean, default: true },
+        position: { type: Boolean, default: true },
+        affiliate: { type: Boolean, default: false },
+        balance: { type: Boolean, default: false },
+        walletSummary: { type: Boolean, default: false },
+        enabled: { type: Boolean, default: false },
+        valid: { type: Boolean, default: false },
+    },
+
+});
+const Person = mongoose.model('Person', PersonSchema);
+
 module.exports = {
     Group,
     Query,
     Bug,
-    File
+    File,
+    Person
 }

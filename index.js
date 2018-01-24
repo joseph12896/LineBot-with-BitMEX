@@ -31,10 +31,28 @@ InitializeDatabase(async function (dbs) {
   app.use('/file', fileRouter);
 
   /**
+   * 前端
+   */
+  const frontendRouter = require('./Frontend/');
+  app.use('/frontend', frontendRouter);
+
+  /**
    * 啟動express server
    */
   var server = app.listen(process.env.PORT || 3000, function () {
     var port = server.address().port;
     console.log("App now running on port", port);
   });
+
+  /**
+   * iosocket
+   */
+  // const io = require('socket.io')(server, {
+  //   path: '/test',
+  //   serveClient: false,
+  //   // below are engine.IO options
+  //   pingInterval: 10000,
+  //   pingTimeout: 5000,
+  //   cookie: false
+  // });
 });

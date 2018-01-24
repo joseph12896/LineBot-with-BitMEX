@@ -8,7 +8,7 @@ module.exports = function (Regexp, cb) {
         var tmp = this.Regexp.exec(str);
         this.Regexp.lastIndex = 0; // reset lastIndex for next action
         if (tmp !== null) {
-            cb(lineEvent, tmp[1]);
+            cb(lineEvent, tmp[1], tmp[2]);
             return true;
         }
         return false;

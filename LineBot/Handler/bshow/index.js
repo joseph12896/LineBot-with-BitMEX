@@ -1,5 +1,5 @@
 const wrapper = require('../wrapper.js');
-module.exports = new wrapper(/^bot 韭菜(\s.+)?$/iug, EventMsgToImgLink);
+module.exports = new wrapper(/^bot ([^\s.]+)(\s.+)?$/iug, EventMsgToImgLink);
 
 const webshot = require('./webshot'),
     uploadToImgur = require('./uploadToImgur'),
@@ -10,15 +10,53 @@ const webshot = require('./webshot'),
     path = require('path'),
     File = require(SCHEMA_PATH).File,
     url = require('url'),
-    crypto = require('crypto');
+    crypto = require('crypto'),
+    fetch = require('node-fetch'),
+    Person = require(SCHEMA_PATH).Person;
 
-const apiKey = process.env.apiKey,
-    secret = process.env.secret;
+// dev
+// const apiKey = process.env.apiKey,
+//     secret = process.env.secret;
 
 const template_path = path.resolve(__dirname);
 
-async function EventMsgToImgLink(event, matchedStr = ' ') {
-    matchedStr = matchedStr.substr(1); // 消去跟在後面的空格
+async function EventMsgToImgLink(event, str1, str2) {
+    // 尋找使用者
+    let setting = await Person.findOne({ "bitmexQuerySetting.displayName": str1 }).exec();
+    if (!setting) return;
+    // 使用者允許啟用?
+    if (!setting.bitmexQuerySetting.enabled) {
+        event.reply('Disabled');
+        return; // protect
+    }
+    // 取得apikey&secret
+    let apiKey = setting.bitmexQuerySetting.apikey;
+    let secret = setting.bitmexQuerySetting.secret;
+    // 驗證apikey有效性
+    try {
+        let url = '/api/v1/user/affiliateStatus';
+        let nonce = moment().format('x');
+        let signature = bitmex_signature('GET', url, nonce, secret);
+        let valid = await fetch('https://www.bitmex.com' + url, { //隨便抓一頁需要apikey的
+            headers: {
+                'content-type': 'application/json',
+                'Accept': 'application/json',
+                'api-key': apiKey,
+                'api-nonce': nonce,
+                'api-signature': signature,
+            }
+        });
+        valid = await valid.json();
+        if (valid.error) return;
+    } catch (error) {
+        return console.log(error);
+    }
+
+    // 主函式
+    let matchedStr = '';
+    if (str2) {
+        matchedStr = str2.substr(1); // 消去跟在後面的空格
+    }
     try {
         // 取得對應資料，產生html
         let html, windowSize = {
@@ -26,17 +64,29 @@ async function EventMsgToImgLink(event, matchedStr = ' ') {
             height: 768
         };
         if (matchedStr == 'exec') {
+            if (!setting.bitmexQuerySetting.execution) {
+                event.reply('Denied');
+                return; // protect
+            }
             // show execution
-            windowSize.height = 768; // 限制截圖高度
-            html = await execHtml();
+            windowSize.height = 1024; // 限制截圖高度
+            html = await execHtml(apiKey, secret);
         } else if (matchedStr == 'ord') {
+            if (!setting.bitmexQuerySetting.order) {
+                event.reply('Denied');
+                return; // protect
+            }
             // show order
             windowSize.height = 400; // 限制截圖高度
-            html = await ordHtml();
+            html = await ordHtml(apiKey, secret);
         } else if (matchedStr == '') {
+            if (!setting.bitmexQuerySetting.position) {
+                event.reply('Denied');
+                return; // protect
+            }
             // show position
             windowSize.height = 150; // 限制截圖高度
-            html = await posHtml();
+            html = await posHtml(apiKey, secret);
         } else {
             return;
         };
@@ -89,7 +139,7 @@ async function EventMsgToImgLink(event, matchedStr = ' ') {
 /**
  * 產生execution的html
  */
-async function execHtml() {
+async function execHtml(apiKey, secret) {
     let bitmex = new ccxt.bitmex({
         apiKey: apiKey,
         secret: secret,
@@ -132,7 +182,7 @@ async function execHtml() {
 /**
  * 產生position的html
  */
-async function posHtml() {
+async function posHtml(apiKey, secret) {
     let bitmex = new ccxt.bitmex({
         apiKey: apiKey,
         secret: secret,
@@ -169,7 +219,7 @@ async function posHtml() {
 /**
  * 產生order的html
  */
-async function ordHtml() {
+async function ordHtml(apiKey, secret) {
     let bitmex = new ccxt.bitmex({
         apiKey: apiKey,
         secret: secret,
@@ -200,4 +250,14 @@ async function ordHtml() {
 
     // 產生HTML
     return $.html();
+}
+
+/**
+ * 產生bitMEX簽名
+ */
+function bitmex_signature(VERB, PATH, NONCE, API_SECRET) {
+    return crypto
+        .createHmac('sha256', API_SECRET)
+        .update(VERB + PATH + NONCE)
+        .digest('hex');
 }
